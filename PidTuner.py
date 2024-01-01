@@ -1,34 +1,33 @@
 #coding=gbk
 
-# pid µ÷½ÚÊµÑé
+# pid è°ƒèŠ‚å®éªŒ
 from IPython.display import display
 from sympy import *
+init_printing(use_latex='mathjax')
 
-# init_printing(use_latex='mathjax')
-#
-# # Symbols pÊÇÎ¢·ÖËã×Ó Ïàµ±ÓÚs
-# Kp, Ki = symbols('K_p K_i')
-# p, R, L = symbols('p R L')
-#
-# PI = Kp * (p + Ki) / p      # ´®ÁªÊ½PI¿ØÖÆÆ÷
-# dc_motor = 1 / (R + p*L)     # Ö±Á÷µç»ú´«º¯
-# G_open = PI * dc_motor
-# G_closed = G_open / (1 + G_open)
-#
-# display(G_closed)
-# display(simplify(G_closed))
-# print(type(G_closed))
-#
-# num, den = fraction(G_closed)
-# display('Numerator', num)
-# display('Denominator', simplify(den))
-#
-# display(Poly(num, p).coeffs())
-# display(Poly(simplify(den), p).coeffs())
-#
-# print(latex(Poly(num, p)))
-# print(latex(Poly(simplify(den), p)))
-#
+# Symbols pæ˜¯å¾®åˆ†ç®—å­ ç›¸å½“äºs
+Kp, Ki = symbols('K_p K_i')
+p, R, L = symbols('p R L')
+
+PI = Kp * (p + Ki) / p      # ä¸²è”å¼PIæ§åˆ¶å™¨
+dc_motor = 1 / (R + p*L)     # ç›´æµç”µæœºä¼ å‡½
+G_open = PI * dc_motor
+G_closed = G_open / (1 + G_open)
+
+display(G_closed)
+display(simplify(G_closed))
+print(type(G_closed))
+
+num, den = fraction(G_closed)
+display('Numerator', num)
+display('Denominator', simplify(den))
+
+display(Poly(num, p).coeffs())
+display(Poly(simplify(den), p).coeffs())
+
+print(latex(Poly(num, p)))
+print(latex(Poly(simplify(den), p)))
+
 from pylab import *
 import matplotlib
 import matplotlib.pyplot as plt
@@ -42,12 +41,12 @@ mpl.rcParams['figure.dpi'] = 200
 plt.style.use('ggplot')
 matplotlib.use('TkAgg')
 
-# # Ò»½×ÏµÍ³bodeÍ¼
-# numerator = [1]
-# denominator = [0.01/(2*np.pi), 1]
-# sys = TransferFunction(numerator, denominator)
-# frequency_range = 2*np.pi*np.logspace(-2, 4, 1000)
-# mag, phase, omega = bode_plot(sys, frequency_range, dB=True,  Hz=True, deg=True)
+# ä¸€é˜¶ç³»ç»Ÿbodeå›¾
+numerator = [1]
+denominator = [0.01/(2*np.pi), 1]
+sys = TransferFunction(numerator, denominator)
+frequency_range = 2*np.pi*np.logspace(-2, 4, 1000)
+mag, phase, omega = bode_plot(sys, frequency_range, dB=True,  Hz=True, deg=True)
 
 
 def get_coeffs_dc_motor_current_regulator(R, L, Bandwidth_Hz):
@@ -56,57 +55,57 @@ def get_coeffs_dc_motor_current_regulator(R, L, Bandwidth_Hz):
     return Kp, Ki
 
 
-# R = 0.1
-# L = 0.4
-#
-# Kp, Ki = get_coeffs_dc_motor_current_regulator(R, L, 200)   # ´ø¿í£º200Hz
-#
-# print('Kp = ', Kp, '|', 'Ki = ', Ki)
-#
-# dc_motor = control.tf([1], [L, R])
-# pi_regulator = control.tf([Kp, Kp*Ki], [1, 0])
-# display(dc_motor)
-# display(pi_regulator)
-#
-# open_sys = control.series(pi_regulator, dc_motor)   # ´«º¯´®Áª£¬Ïà³Ë
-# closed_sys = control.feedback(open_sys, 1, sign=-1)  # ¸º·´À¡
-# display(open_sys)
-# display(closed_sys)
-# closed_sys = control.minreal(closed_sys)    # ×îĞ¡ÊµÏÖ£¬¼´Áã¼«µã¶ÔÏû£¬¶ş½×ÏµÍ³±ä³ÉÒ»½×ÏµÍ³
-# display(closed_sys)
-# print('Kp/L = ', Kp/L)
-# print('Kp/L/(2pi) = ', Kp/L/(2*pi))
-#
-# # plot bode
-# plt.figure()
-# mag, phase, omega = bode_plot(closed_sys, 2*np.pi*np.logspace(-2,4,1000), dB=1, Hz=1, deg=1)
-#
-# # ½×Ô¾ÏìÓ¦
-# T, yout = control.step_response(closed_sys, np.arange(0, 20, 1e-3))  # arange:Êä³öÀàĞÍarray£»range£ºÊä³öÀàĞÍlist
-# plt.figure()
-# plt.plot(T, yout)
-# plt.ylim([0, 1.2])
-#
-# # ÉÏÉıÊ±¼ä
-# print(min(yout, key=lambda x : abs(x-0.9)))  # Ê¹ÓÃlambdaÄäÃûº¯Êı£¬¿ìËÙÊµÏÖº¯Êı¹¦ÄÜ lambda argument_list:expersion
-# print(T[(np.abs(yout - 0.9)).argmin()] * 1000, 'ms')
-#
-# print('dc gain: ', control.dcgain(closed_sys))      # ÁãÆµÔöÒæ£¨Ö±Á÷ÔöÒæ£©
-# print('zero: ', control.zeros(closed_sys))
-# print('pole: ', control.poles(closed_sys))
+R = 0.1
+L = 0.4
 
-# ===================================================== µçÁ÷»· =================================================
+Kp, Ki = get_coeffs_dc_motor_current_regulator(R, L, 200)   # å¸¦å®½ï¼š200Hz
+
+print('Kp = ', Kp, '|', 'Ki = ', Ki)
+
+dc_motor = control.tf([1], [L, R])
+pi_regulator = control.tf([Kp, Kp*Ki], [1, 0])
+display(dc_motor)
+display(pi_regulator)
+
+open_sys = control.series(pi_regulator, dc_motor)   # ä¼ å‡½ä¸²è”ï¼Œç›¸ä¹˜
+closed_sys = control.feedback(open_sys, 1, sign=-1)  # è´Ÿåé¦ˆ
+display(open_sys)
+display(closed_sys)
+closed_sys = control.minreal(closed_sys)    # æœ€å°å®ç°ï¼Œå³é›¶æç‚¹å¯¹æ¶ˆï¼ŒäºŒé˜¶ç³»ç»Ÿå˜æˆä¸€é˜¶ç³»ç»Ÿ
+display(closed_sys)
+print('Kp/L = ', Kp/L)
+print('Kp/L/(2pi) = ', Kp/L/(2*pi))
+
+# plot bode
+plt.figure()
+mag, phase, omega = bode_plot(closed_sys, 2*np.pi*np.logspace(-2,4,1000), dB=1, Hz=1, deg=1)
+
+# é˜¶è·ƒå“åº”
+T, yout = control.step_response(closed_sys, np.arange(0, 20, 1e-3))  # arange:è¾“å‡ºç±»å‹arrayï¼›rangeï¼šè¾“å‡ºç±»å‹list
+plt.figure()
+plt.plot(T, yout)
+plt.ylim([0, 1.2])
+
+# ä¸Šå‡æ—¶é—´
+print(min(yout, key=lambda x : abs(x-0.9)))  # ä½¿ç”¨lambdaåŒ¿åå‡½æ•°ï¼Œå¿«é€Ÿå®ç°å‡½æ•°åŠŸèƒ½ lambda argument_list:expersion
+print(T[(np.abs(yout - 0.9)).argmin()] * 1000, 'ms')
+
+print('dc gain: ', control.dcgain(closed_sys))      # é›¶é¢‘å¢ç›Šï¼ˆç›´æµå¢ç›Šï¼‰
+print('zero: ', control.zeros(closed_sys))
+print('pole: ', control.poles(closed_sys))
+
+# ===================================================== ç”µæµç¯ =================================================
 # -------------------------------------------------------------------------------------------------------------
-# ===================================================== ×ªËÙ»· =================================================
-from IPython.display import display
-from sympy import *
-init_printing(use_latex='mathjax')
+# ===================================================== è½¬é€Ÿç¯ =================================================
+# from IPython.display import display
+# from sympy import *
+# init_printing(use_latex='mathjax')
 
 p, L, Kp = symbols('p L K^i_p')
-Gi_closed = 1 / (1 + L/Kp*p)    # µçÁ÷»·´«º¯£¬Áã¼«¶ÔÏûºóµÄÒ»½×ÏµÍ³
+Gi_closed = 1 / (1 + L/Kp*p)    # ç”µæµç¯ä¼ å‡½ï¼Œé›¶æå¯¹æ¶ˆåçš„ä¸€é˜¶ç³»ç»Ÿ
 
 # Symbols
-speedKp, speedKi = symbols('K^¦Ø_p K^¦Ø_i')
+speedKp, speedKi = symbols('K^Ï‰_p K^Ï‰_i')
 J_s, n_pp = symbols('J_s n_pp')
 
 speedPI = speedKp*(p + speedKi)/p
@@ -132,7 +131,7 @@ Gi_closed = control.tf([1], [L/Kp, 1])
 currentBandwidth_radPerSec = Kp/L
 print('Bw_i:', currentBandwidth_radPerSec/(2*np.pi), 'Hz')
 
-
+# ä½¿ç”¨å¸¦å®½çš„å¼§åº¦è®¡ç®—Kp
 def get_coeffs_dc_motor_SPEED_regurator(J_s, n_pp, delta, currentBandwidth_radPerSec):
     speedKi = currentBandwidth_radPerSec / delta**2
     speedKp = J_s/n_pp * delta * speedKi
@@ -160,7 +159,7 @@ for delta in [1.5, 2, 4, 8, 10]:
     mag, phase, omega = bode_plot(Gw_closed, 2*np.pi*np.logspace(0, 4, 500), dB=1, Hz=1, deg=1, lw='0.5', label=f'{delta:g}')
     plt.figure(3)
     T, yout = control.step_response(Gw_closed, np.arange(0,0.05,1e-5))
-    # ÉÏÉıÊ±¼ä£º
+    # ä¸Šå‡æ—¶é—´ï¼š
     print('\t', min(yout, key=lambda x : abs(x-0.9)), 'A')
     rise_time_ms = T[(np.abs(yout-0.9)).argmin()] * 1000
     print('\t', rise_time_ms, 'ms')
@@ -176,21 +175,21 @@ for i in [1, 2, 3]:
 
 
 delta = 5
-desired_rise_time_ms = 2.3      # ½×Ô¾ÉÏÉıÊ±¼ä
+desired_rise_time_ms = 2.3      # é˜¶è·ƒä¸Šå‡æ—¶é—´
 
 rise_time_ms = 100   # ms initial
 Bw_current_Hz = 100   # Hz initial
 while True:
-    # µçÁ÷»· µ÷Õû´ø¿í, ¸Ä±äÉÏÉıÊ±¼ä
+    # ç”µæµç¯ è°ƒæ•´å¸¦å®½, æ”¹å˜ä¸Šå‡æ—¶é—´
     if abs(rise_time_ms - desired_rise_time_ms) <= 0.1:
         break
     else:
         if rise_time_ms > desired_rise_time_ms:
-            Bw_current_Hz += 10     # Hz    ÏìÓ¦Âı£¬´ø¿íĞ¡£¬Òò´ËÌá¸ß´ø¿í
+            Bw_current_Hz += 10     # Hz    å“åº”æ…¢ï¼Œå¸¦å®½å°ï¼Œå› æ­¤æé«˜å¸¦å®½
         else:
             Bw_current_Hz -= 10
             if Bw_current_Hz <= 0:
-                raise Exception('Bandwidth is not less than 0Hz. Change bandwidth and try again.')  # Òı·¢Ò»¸öÒì³££¬³ÌĞòÖĞÖ¹ÔËĞĞ
+                raise Exception('Bandwidth is not less than 0Hz. Change bandwidth and try again.')  # å¼•å‘ä¸€ä¸ªå¼‚å¸¸ï¼Œç¨‹åºä¸­æ­¢è¿è¡Œ
     print(f'Bw_current_Hz = {Bw_current_Hz}')
     R = 0.1
     L = 0.4
@@ -198,7 +197,7 @@ while True:
     Gi_closed = control.tf([1], [L/Kp, 1])
     currentBandwidth_radPerSec = Kp/L
 
-    # ËÙ¶È»· speed loop
+    # é€Ÿåº¦ç¯ speed loop
     n_pp = 2
     J_s = 0.06
     dc_motor_motion = control.tf([n_pp/J_s], [1, 0])
